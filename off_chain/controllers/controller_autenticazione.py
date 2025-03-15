@@ -32,7 +32,7 @@ class ControllerAutenticazione:
         except DatabaseError:
             return False, "Errore nel database.", None
 
-    def login_2(self, username, password, otp_code):
+    def login(self, username, password, otp_code):
         # Recupera le credenziali dell'utente specifico
         credenziale = self.database.get_credenziale_by_username(username)
 

@@ -245,7 +245,7 @@ class VistaAccedi(QMainWindow):
             # Verifica le credenziali dell'utente
             # utente = self.controller.login(username, password, otp_code)
 
-            utente, messaggio = self.controller.login_2(username, password, otp_code)
+            utente, messaggio = self.controller.login(username, password, otp_code)
 
             if not utente:
                 QMessageBox.warning(self, "SupplyChain", messaggio)
