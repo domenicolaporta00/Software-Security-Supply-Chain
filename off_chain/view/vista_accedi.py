@@ -1,14 +1,15 @@
 import pyotp
+import os
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QIcon, QFont
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QFormLayout, QLineEdit, QPushButton, \
     QHBoxLayout, QMainWindow, QMessageBox, QAction, QCheckBox, QStackedWidget, QComboBox
 
-from off_chain.controllers.controller_autenticazione import ControllerAutenticazione
-from off_chain.view import funzioni_utili
-from off_chain.view.home_page_aziende import HomePage
-from off_chain.view.home_page_certificatore import HomePageCertificatore
-from off_chain.view.home_page_guest import HomePageGuest
+from controllers.controller_autenticazione import ControllerAutenticazione
+from view import funzioni_utili
+from view.home_page_aziende import HomePage
+from view.home_page_certificatore import HomePageCertificatore
+from view.home_page_guest import HomePageGuest
 
 from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 import pyotp
@@ -18,12 +19,16 @@ class VistaAccedi(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        # Ottieni il percorso della directory delle immagini
+        self.current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.images_dir = os.path.join(self.current_dir, "images")
+
         self.controller = ControllerAutenticazione()
 
         self.home_certificatore = None
         self.home_page = None
         self.home_guest = None
-        self.setWindowIcon(QIcon("images\\logo_centro.png"))
+        self.setWindowIcon(QIcon(os.path.join(self.images_dir, "logo_centro.png")))
 
         # Elementi di layout
         self.login_label = QLabel("Login")
@@ -155,7 +160,7 @@ class VistaAccedi(QMainWindow):
 
         main_layout.addLayout(button_layout)
 
-        self.logo.setPixmap(QPixmap("images\\logo_trasparente.png"))
+        self.logo.setPixmap(QPixmap(os.path.join(self.images_dir, "logo_trasparente.png")))
         self.logo.setScaledContents(True)
         self.logo.setFixedSize(300, 300)
         main_layout.addWidget(self.logo, alignment=Qt.AlignCenter)
@@ -193,7 +198,7 @@ class VistaAccedi(QMainWindow):
             self.conferma_password_label, self.conferma_password_input, form_layout)
 
         for p in self.password:
-            self.icons_action.append(QAction(QIcon("images\\pass_invisibile.png"), "", p))
+            self.icons_action.append(QAction(QIcon(os.path.join(self.images_dir, "pass_invisibile.png")), "", p))
         for index, p in enumerate(self.password):
             self.icons_action[index].triggered.connect(self.change_password_visibility)
             p.addAction(self.icons_action[index], QLineEdit.TrailingPosition)
@@ -312,11 +317,11 @@ class VistaAccedi(QMainWindow):
         if not self.password_visibile:
             for index, p in enumerate(self.password):
                 p.setEchoMode(QLineEdit.Password)
-                self.icons_action[index].setIcon(QIcon("images\\pass_invisibile.png"))
+                self.icons_action[index].setIcon(QIcon(os.path.join(self.images_dir, "pass_invisibile.png")))
         else:
             for index, p in enumerate(self.password):
                 p.setEchoMode(QLineEdit.Normal)
-                self.icons_action[index].setIcon(QIcon("images\\pass_visibile.png"))
+                self.icons_action[index].setIcon(QIcon(os.path.join(self.images_dir, "pass_visibile.png")))
 
     def reset(self):
         self.tcu_cb.setChecked(False)

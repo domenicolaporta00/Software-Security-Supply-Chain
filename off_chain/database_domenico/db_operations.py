@@ -341,41 +341,57 @@ class Database:
         except Exception as e:
             raise Exception(f"Errore generico: {str(e)}")  # Cattura altre eccezioni generiche
 
+    @staticmethod
     def hash_password(password):
-    """Esegue l'hashing della password usando SHA-256"""
-    return hashlib.sha256(password.encode()).hexdigest()
+        """Esegue l'hashing della password usando SHA-256"""
+        return hashlib.sha256(password.encode()).hexdigest()
 
-    # Modifica della password
-    def modifica_password(self, id_azienda, nuova_password):
-        # Controllo lunghezza password
+    def modifica_password(self, id_azienda, vecchia_password, nuova_password):
+        """Modifica la password di un'azienda dopo aver verificato quella attuale"""
+
+        # Recupera la password attuale dal database
+        query_get_password = """
+        SELECT Password FROM Credenziali WHERE Id_credenziali = (
+            SELECT Id_credenziali FROM Azienda WHERE Id_azienda = ?
+        );
+        """
+        password_db = self.fetch_query(query_get_password, (id_azienda,))
+
+        if not password_db:
+            raise ValueError("Azienda non trovata o credenziali non valide.")
+
+        # Confronta la password inserita con quella memorizzata (già hashata)
+        hashed_old_password = self.hash_password(vecchia_password)
+        if password_db[0][0] != hashed_old_password:
+            raise ValueError("La vecchia password non è corretta.")
+
+        # Controllo sulla nuova password
         if len(nuova_password) < 8:
-            raise PasswordTooShortError("La password deve contenere almeno 8 caratteri!")
-
-        # Controllo complessità con regex
-        if not re.search(r'[A-Z]', nuova_password):  # Almeno una lettera maiuscola
-            raise PasswordWeakError("La password deve contenere almeno una lettera maiuscola.")
-        if not re.search(r'[a-z]', nuova_password):  # Almeno una lettera minuscola
-            raise PasswordWeakError("La password deve contenere almeno una lettera minuscola.")
-        if not re.search(r'[0-9]', nuova_password):  # Almeno un numero
-            raise PasswordWeakError("La password deve contenere almeno un numero.")
-        if not re.search(r'\W', nuova_password):  # Almeno un carattere speciale
-            raise PasswordWeakError("La password deve contenere almeno un carattere speciale (!, @, #, etc.).")
-        if "'" in nuova_password or " " in nuova_password:  # Evita caratteri pericolosi
-            raise PasswordWeakError("La password non può contenere spazi o apostrofi.")
+            raise ValueError("La password deve contenere almeno 8 caratteri!")
+        if not re.search(r'[A-Z]', nuova_password):
+            raise ValueError("La password deve contenere almeno una lettera maiuscola.")
+        if not re.search(r'[a-z]', nuova_password):
+            raise ValueError("La password deve contenere almeno una lettera minuscola.")
+        if not re.search(r'[0-9]', nuova_password):
+            raise ValueError("La password deve contenere almeno un numero.")
+        if not re.search(r'\W', nuova_password):
+            raise ValueError("La password deve contenere almeno un carattere speciale (!, @, #, etc.).")
+        if "'" in nuova_password or " " in nuova_password:
+            raise ValueError("La password non può contenere spazi o caratteri pericolosi.")
 
         # Hash della nuova password
-        hashed_password = bcrypt.hashpw(nuova_password.encode(), bcrypt.gensalt())
+        hashed_new_password = self.hash_password(nuova_password)
 
-        query = """
-        UPDATE Credenziali
-        SET Password = ?
-        WHERE Id_credenziali = (SELECT Id_credenziali FROM Azienda WHERE Id_azienda = ?)
+        # Aggiorna la password nel database
+        query_update_password = """
+        UPDATE Credenziali 
+        SET Password = ? 
+        WHERE Id_credenziali = (
+            SELECT Id_credenziali FROM Azienda WHERE Id_azienda = ?
+        );
         """
-        try:
-            self.cur.execute(query, (hashed_password, id_azienda))
-            self.conn.commit()
-        except sqlite3.Error as e:
-            raise Exception(f"Errore generico: {str(e)}")  # Cattura altre eccezioni generiche
+        self.execute_query(query_update_password, (hashed_new_password, id_azienda))
+        return True
 
     # Restituisce la password dell'azienda
     def get_password(self, id_azienda):
@@ -767,35 +783,6 @@ class Database:
             return ()
 
         return self.fetch_query(query)
-
-    def is_trasformatore(self, id_azienda):
-    query = "SELECT Tipo FROM Azienda WHERE Id_azienda = ?;"
-    risultato = self.fetch_query(query, (id_azienda,))
-    
-    if risultato and risultato[0][0] == "Trasformatore":
-        return True
-    return False
-
-    def get_stato_prodotto(self, id_prodotto):
-    query = "SELECT Stato FROM Prodotto WHERE Id_prodotto = ?;"
-    risultato = self.fetch_query(query, (id_prodotto,))
-    
-    if risultato:
-        return risultato[0][0]
-    else:
-        raise ValueError("Prodotto non trovato.")
-
-    def aggiorna_stato_prodotto(self, id_prodotto, nuovo_stato):
-    query = "UPDATE Prodotto SET Stato = ? WHERE Id_prodotto = ?;"
-    self.execute_query(query, (nuovo_stato, id_prodotto))
-
-    def get_prodotti_per_stato(self, stato):
-    query = """
-    SELECT Id_prodotto, Nome, Quantita, Stato
-    FROM Prodotto
-    WHERE Stato = ?;
-    """
-    return self.fetch_query(query, (stato,))
 
     def close(self):
         self.conn.close()
