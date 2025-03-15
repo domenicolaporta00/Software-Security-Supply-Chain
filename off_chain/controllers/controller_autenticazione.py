@@ -3,7 +3,7 @@ from sqlite3 import IntegrityError
 import bcrypt
 import pyotp
 
-from off_chain.database_domenico.db_login import DatabaseLogin, UniqueConstraintError, DatabaseError, \
+from database_domenico.db_login import DatabaseLogin, UniqueConstraintError, DatabaseError, \
     PasswordTooShortError, PasswordWeakError
 
 
