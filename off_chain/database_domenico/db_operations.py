@@ -768,5 +768,34 @@ class Database:
 
         return self.fetch_query(query)
 
+    def is_trasformatore(self, id_azienda):
+    query = "SELECT Tipo FROM Azienda WHERE Id_azienda = ?;"
+    risultato = self.fetch_query(query, (id_azienda,))
+    
+    if risultato and risultato[0][0] == "Trasformatore":
+        return True
+    return False
+
+    def get_stato_prodotto(self, id_prodotto):
+    query = "SELECT Stato FROM Prodotto WHERE Id_prodotto = ?;"
+    risultato = self.fetch_query(query, (id_prodotto,))
+    
+    if risultato:
+        return risultato[0][0]
+    else:
+        raise ValueError("Prodotto non trovato.")
+
+    def aggiorna_stato_prodotto(self, id_prodotto, nuovo_stato):
+    query = "UPDATE Prodotto SET Stato = ? WHERE Id_prodotto = ?;"
+    self.execute_query(query, (nuovo_stato, id_prodotto))
+
+    def get_prodotti_per_stato(self, stato):
+    query = """
+    SELECT Id_prodotto, Nome, Quantita, Stato
+    FROM Prodotto
+    WHERE Stato = ?;
+    """
+    return self.fetch_query(query, (stato,))
+
     def close(self):
         self.conn.close()
