@@ -99,16 +99,12 @@ class ControllerCertificatore:
         except Exception as e:
             return False, f"Errore sconosciuto: {str(e)}"
 
-    def modifica_password(self, id_azienda, vecchia_password, nuova_password):
-    """Interfaccia per modificare la password di un'azienda"""
-    try:
-        self.database.modifica_password(id_azienda, vecchia_password, nuova_password)
-        return True, "Password modificata con successo!"
-    except ValueError as e:
-        return False, str(e)
-    except Exception:
-        return False, "Errore durante la modifica della password."
-
+    def modifica_password_azienda(self, id_azienda, nuova_password):
+        try:
+        self.database.modifica_password(id_azienda, nuova_password)
+            return True, "Password modificata correttamente!"
+        except Exception as e:
+            return False, f"Errore sconosciuto: {str(e)}"
 
     # Restituisce i dati anagrafici dell'azienda
     def get_anagrafica_azienda(self, id_azienda):
