@@ -89,14 +89,14 @@ class ControllerAzienda:
     # Recupera lo stato attuale del prodotto
     stato_attuale = self.database.get_stato_prodotto(prodotto)
 
-    # **1️⃣ Produzione (Azienda Agricola)**
+    # **Produzione (Azienda Agricola)**
     if tipo_azienda == "Agricola":
         nuovo_stato = 0  # Stato iniziale
         self.database.inserisci_operazione_azienda_agricola(
             prodotto, quantita, azienda, data, co2, evento, destinatario
         )
 
-    # **2️⃣ Trasporto**
+    # **Trasporto**
     elif tipo_azienda == "Trasportatore":
         if stato_attuale == 0:
             # Se il destinatario è un **trasformatore**, metti stato a 1, altrimenti a 3
@@ -111,7 +111,7 @@ class ControllerAzienda:
             azienda, prodotto, data, co2, evento, nuovo_stato, destinatario
         )
 
-    # **3️⃣ Trasformazione (Azienda Trasformatrice)**
+    # **Trasformazione (Azienda Trasformatrice)**
     elif tipo_azienda == "Trasformatore":
         if stato_attuale == 1:
             nuovo_stato = 2  # Il prodotto è stato trasformato
@@ -121,7 +121,7 @@ class ControllerAzienda:
         else:
             raise ValueError("Il prodotto non può essere trasformato dallo stato attuale.")
 
-    # **4️⃣ Messa in vendita (Azienda Rivenditore)**
+    # **Messa in vendita (Azienda Rivenditore)**
     elif tipo_azienda == "Rivenditore":
         if stato_attuale == 3:
             nuovo_stato = 4  # Prodotto messo in vendita
