@@ -11,9 +11,9 @@ class DuplicatedEntryError(Exception):
 class Database:
     def __init__(self, db_path='database.db'):
         # Percorso assoluto del database nella cartella del progetto
-        if db_path is None:
-            BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # Risale di una cartella
-            self.db_path = os.path.join(BASE_DIR, 'database.db')
+        if db_path == 'database.db':  # Se viene usato il percorso di default
+            BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            self.db_path = os.path.join(BASE_DIR, db_path)
         else:
             self.db_path = db_path
 
