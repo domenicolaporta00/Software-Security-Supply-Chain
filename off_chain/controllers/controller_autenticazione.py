@@ -60,30 +60,3 @@ class ControllerAutenticazione:
         azienda = self.database.get_azienda_by_id(id_)
         return (azienda[0], "Accesso effettuato correttamente!") if azienda \
             else (None, "Errore!")
-
-    # Effettua il login
-    def login(self, username, password, otp_code=None):
-        credenziali = self.database.get_lista_credenziali()
-        if (username, password) not in [(t[1], t[2]) for t in credenziali]:
-            return None
-        else:
-            # Cerca le credenziali dell'utente
-            for credenziale in credenziali:
-                if credenziale[1] == username and credenziale[2] == password:
-                    id_ = credenziale[0]
-
-                    # Recupera l'azienda dell'utente
-                    azienda = self.database.get_azienda_by_id(id_)
-
-                    # Recupera la chiave segreta OTP per questo utente
-                    secret_key = credenziale[3]  # Supponiamo che la chiave segreta OTP sia nel campo 3 dell'azienda
-
-                    # Verifica il codice OTP (se presente)
-                    if otp_code:
-                        totp = pyotp.TOTP(secret_key)
-                        if not totp.verify(otp_code):  # Verifica se l'OTP è corretto
-                            print('errore')
-                            return None  # Se l'OTP non è valido, ritorna None
-
-                    return azienda[0]  # Se le credenziali e l'OTP sono corretti, ritorna l'azienda dell'utente
-
