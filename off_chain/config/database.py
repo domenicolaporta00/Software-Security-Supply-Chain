@@ -19,9 +19,23 @@ class Database:
             port=Settings.DB_PORT
         )
 
-    def get_connection(self):
-        return self.connection
+    def execute_query(self, query, params=()):
+        """Esegue query di modifica (INSERT, UPDATE, DELETE)."""
+        try:
+            self.cur.execute(query, params)
+            self.conn.commit()
+        except psycopg2.Error as e:
+            self.conn.rollback()
+            raise RuntimeError(f"Errore database: {e}")
 
+    def fetch_query(self, query, params=()):
+        """Esegue una SELECT e restituisce i risultati."""
+        try:
+            self.cur.execute(query, params)
+            return self.cur.fetchall()
+        except psycopg2.Error as e:
+            raise RuntimeError(f"Errore database: {e}")
+        
     def close_connection(self):
         if self.connection:
             self.connection.close()
