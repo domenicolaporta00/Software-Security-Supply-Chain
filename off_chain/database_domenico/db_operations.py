@@ -2,6 +2,7 @@ import os
 import sqlite3
 import hashlib
 import re
+from off_chain.database_domenico.db_operations import Database
 
 class DuplicatedEntryError(Exception):
     """Eccezione personalizzata per i dati duplicati nel database."""
@@ -784,5 +785,21 @@ class Database:
 
         return self.fetch_query(query)
 
+    def is_trasformatore(self, id_azienda):
+        query = "SELECT Tipo FROM Azienda WHERE Id_azienda = ?"
+        result = self.fetch_query(query, (id_azienda,))
+        return result[0][0] == "Trasformatore" if result else False
+
+    def get_stato_prodotto(self, id_prodotto):
+        query = "SELECT Stato FROM Prodotto WHERE Id_prodotto = ?"
+        result = self.fetch_query(query, (id_prodotto,))
+        if not result:
+            raise ValueError("Prodotto non trovato.")
+        return result[0][0]
+
+    def aggiorna_stato_prodotto(self, id_prodotto, nuovo_stato):
+        query = "UPDATE Prodotto SET Stato = ? WHERE Id_prodotto = ?"
+        self.execute_query(query, (nuovo_stato, id_prodotto))
+    
     def close(self):
         self.conn.close()
