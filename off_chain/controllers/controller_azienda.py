@@ -81,64 +81,82 @@ class ControllerAzienda:
         elif azienda == "Rivenditore":
             return self.database.get_prodotti_to_rivenditore(id_azienda)
 
+    # Verifica la password dell'azienda
+    def verify_password(self, id_azienda, password):
+        """Verifica se la password fornita corrisponde a quella memorizzata per l'azienda"""
+        return self.database.verify_password(id_azienda, password)
+
     # Aggiunge un'operazione
     def aggiungi_operazione(
         self, tipo_azienda, azienda, prodotto, data, co2, evento,
-        quantita='', destinatario=0, materie_prime=None):
-        # Recupera lo stato attuale del prodotto
-        stato_attuale = self.database.get_stato_prodotto(prodotto)
-        nuovo_stato = None  # Initialize to avoid reference before assignment
+        quantita='', destinatario=0, materie_prime=None, password=None):
+        
+        # Verifica la password prima di procedere
+        if password is None:
+            return False, "Password richiesta per questa operazione."
+            
+        if not self.verify_password(azienda, password):
+            return False, "Password non corretta. Operazione annullata."
+        
+        try:
+            # Recupera lo stato attuale del prodotto
+            stato_attuale = self.database.get_stato_prodotto(prodotto)
+            nuovo_stato = None  # Initialize to avoid reference before assignment
 
-        # **1️⃣ Produzione (Azienda Agricola)**
-        if tipo_azienda == "Agricola":
-            nuovo_stato = 0  # Stato iniziale
-            self.database.inserisci_operazione_azienda_agricola(
-                prodotto, quantita, azienda, data, co2, evento, destinatario
-            )
-
-        # **2️⃣ Trasporto**
-        elif tipo_azienda == "Trasportatore":
-            if stato_attuale == 0:
-                # Se il destinatario è un **trasformatore**, metti stato a 1, altrimenti a 3
-                nuovo_stato = 1 if self.database.is_trasformatore(destinatario) else 3  
-            elif stato_attuale == 2:
-                # Se trasporta un prodotto trasformato, va al rivenditore con stato 3
-                nuovo_stato = 3
-            else:
-                raise ValueError("Operazione di trasporto non valida per lo stato attuale.")
-
-            self.database.inserisci_operazione_azienda_trasporto(
-                azienda, prodotto, data, co2, evento, nuovo_stato, destinatario
-            )
-
-        # **3️⃣ Trasformazione (Azienda Trasformatrice)**
-        elif tipo_azienda == "Trasformatore":
-            if stato_attuale == 1:
-                nuovo_stato = 2  # Il prodotto è stato trasformato
-                self.database.inserisci_operazione_azienda_trasformazione(
-                    azienda, prodotto, data, co2, evento, destinatario, int(quantita) if quantita else 0, materie_prime
+            # **1️⃣ Produzione (Azienda Agricola)**
+            if tipo_azienda == "Agricola":
+                nuovo_stato = 0  # Stato iniziale
+                self.database.inserisci_operazione_azienda_agricola(
+                    prodotto, quantita, azienda, data, co2, evento, destinatario
                 )
-            else:
-                raise ValueError("Il prodotto non può essere trasformato dallo stato attuale.")
 
-        # **4️⃣ Messa in vendita (Azienda Rivenditore)**
-        elif tipo_azienda == "Rivenditore":
-            if stato_attuale == 3:
-                nuovo_stato = 4  # Prodotto messo in vendita
-                self.database.inserisci_operazione_azienda_rivenditore(
-                    azienda, prodotto, data, co2, evento
+            # **2️⃣ Trasporto**
+            elif tipo_azienda == "Trasportatore":
+                if stato_attuale == 0:
+                    # Se il destinatario è un **trasformatore**, metti stato a 1, altrimenti a 3
+                    nuovo_stato = 1 if self.database.is_trasformatore(destinatario) else 3  
+                elif stato_attuale == 2:
+                    # Se trasporta un prodotto trasformato, va al rivenditore con stato 3
+                    nuovo_stato = 3
+                else:
+                    raise ValueError("Operazione di trasporto non valida per lo stato attuale.")
+
+                self.database.inserisci_operazione_azienda_trasporto(
+                    azienda, prodotto, data, co2, evento, nuovo_stato, destinatario
                 )
+
+            # **3️⃣ Trasformazione (Azienda Trasformatrice)**
+            elif tipo_azienda == "Trasformatore":
+                if stato_attuale == 1:
+                    nuovo_stato = 2  # Il prodotto è stato trasformato
+                    self.database.inserisci_operazione_azienda_trasformazione(
+                        azienda, prodotto, data, co2, evento, destinatario, int(quantita) if quantita else 0, materie_prime
+                    )
+                else:
+                    raise ValueError("Il prodotto non può essere trasformato dallo stato attuale.")
+
+            # **4️⃣ Messa in vendita (Azienda Rivenditore)**
+            elif tipo_azienda == "Rivenditore":
+                if stato_attuale == 3:
+                    nuovo_stato = 4  # Prodotto messo in vendita
+                    self.database.inserisci_operazione_azienda_rivenditore(
+                        azienda, prodotto, data, co2, evento
+                    )
+                else:
+                    raise ValueError("Il prodotto non può essere messo in vendita dallo stato attuale.")
             else:
-                raise ValueError("Il prodotto non può essere messo in vendita dallo stato attuale.")
-        else:
-            raise ValueError(f"Tipo di azienda non valido: {tipo_azienda}")
+                raise ValueError(f"Tipo di azienda non valido: {tipo_azienda}")
 
-        # Verify nuovo_stato is set
-        if nuovo_stato is None:
-            raise ValueError("Stato del prodotto non determinato.")
+            # Verify nuovo_stato is set
+            if nuovo_stato is None:
+                raise ValueError("Stato del prodotto non determinato.")
 
-        # **Aggiornamento dello stato del prodotto**
-        self.database.aggiorna_stato_prodotto(prodotto, nuovo_stato)
+            # **Aggiornamento dello stato del prodotto**
+            self.database.aggiorna_stato_prodotto(prodotto, nuovo_stato)
+            
+            return True, "Operazione aggiunta con successo."
+        except Exception as e:
+            return False, f"Errore durante l'aggiunta dell'operazione: {str(e)}"
 
     # Restituisce le opzioni per la combo box del dialog per la composizione
     def get_prodotti_to_composizione(self, id_azienda):

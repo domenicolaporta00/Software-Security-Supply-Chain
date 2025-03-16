@@ -37,8 +37,25 @@ class ControllerCertificatore:
         certificazione = self.database.get_certificazione_by_prodotto(id_prodotto)
         return certificazione
 
-    def inserisci_certificato(self, id_prodotto, descrizione, id_azienda_certificatore, data):
-        self.database.inserisci_certificato(id_prodotto, descrizione, id_azienda_certificatore, data)
+    # Verifica la password dell'azienda
+    def verify_password(self, id_azienda, password):
+        """Verifica se la password fornita corrisponde a quella memorizzata per l'azienda"""
+        return self.database.verify_password(id_azienda, password)
+        
+    def inserisci_certificato(self, id_prodotto, descrizione, id_azienda_certificatore, data, password=None):
+        """Inserisce un certificato dopo aver verificato la password"""
+        # Verifica la password prima di procedere
+        if password is None:
+            return False, "Password richiesta per questa operazione."
+            
+        if not self.verify_password(id_azienda_certificatore, password):
+            return False, "Password non corretta. Operazione annullata."
+            
+        try:
+            self.database.inserisci_certificato(id_prodotto, descrizione, id_azienda_certificatore, data)
+            return True, "Certificato inserito con successo."
+        except Exception as e:
+            return False, f"Errore durante l'inserimento del certificato: {str(e)}"
 
     # Restituisce la lista di tutti i prodotti finali
     def lista_prodotti(self):

@@ -402,6 +402,24 @@ class Database:
         WHERE Id_credenziali = ?
         """
         return self.fetch_query(query, (id_azienda,))[0][0]
+        
+    # Verifica la password dell'azienda
+    def verify_password(self, id_azienda, password):
+        """Verifica se la password fornita corrisponde a quella memorizzata per l'azienda"""
+        # Recupera la password attuale dal database
+        query_get_password = """
+        SELECT Password FROM Credenziali WHERE Id_credenziali = (
+            SELECT Id_credenziali FROM Azienda WHERE Id_azienda = ?
+        );
+        """
+        password_db = self.fetch_query(query_get_password, (id_azienda,))
+
+        if not password_db:
+            return False
+
+        # Confronta la password inserita con quella memorizzata (già hashata)
+        hashed_password = self.hash_password(password)
+        return password_db[0][0] == hashed_password
 
     # Restituisce il numero di certificazioni di un'azienda
     def get_numero_certificazioni(self, id_azienda):
