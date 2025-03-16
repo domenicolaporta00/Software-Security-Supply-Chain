@@ -341,9 +341,7 @@ class Database:
         except Exception as e:
             raise Exception(f"Errore generico: {str(e)}")  # Cattura altre eccezioni generiche
 
-    def hash_password(password):
-    """Esegue l'hashing della password usando SHA-256"""
-    return hashlib.sha256(password.encode()).hexdigest()
+    
 
 def modifica_password(self, id_azienda, vecchia_password, nuova_password):
     """Modifica la password di un'azienda dopo aver verificato quella attuale"""
