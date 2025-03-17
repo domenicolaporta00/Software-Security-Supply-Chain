@@ -9,15 +9,16 @@ class Database:
         if cls._instance is None:
             cls._instance = super(Database, cls).__new__(cls)
             try:
-                cls._instance.conn = sqlite3.connect(
-                    DATABASE_CONFIG["dbname"], check_same_thread=False
-                )
+                cls._instance.conn = sqlite3.connect(DATABASE_CONFIG["NAME"])
                 cls._instance.cur = cls._instance.conn.cursor()
                 print("Connessione al database SQLite riuscita.")
             except sqlite3.Error as e:
                 print(f"Errore durante la connessione al database: {e}")
                 cls._instance = None
         return cls._instance
+    
+            
+        
 
     def execute_query(self, query, params=()):
         """Esegue una query di modifica (INSERT, UPDATE, DELETE) con gestione errori."""
