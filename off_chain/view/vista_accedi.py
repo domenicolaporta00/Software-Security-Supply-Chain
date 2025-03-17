@@ -4,11 +4,11 @@ from PyQt5.QtGui import QPixmap, QIcon, QFont
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QFormLayout, QLineEdit, QPushButton, \
     QHBoxLayout, QMainWindow, QMessageBox, QAction, QCheckBox, QStackedWidget, QComboBox
 
-from off_chain.controllers.controller_autenticazione import ControllerAutenticazione
-from off_chain.view import funzioni_utili
-from off_chain.view.home_page_aziende import HomePage
-from off_chain.view.home_page_certificatore import HomePageCertificatore
-from off_chain.view.home_page_guest import HomePageGuest
+from controllers.controller_autenticazione import ControllerAutenticazione
+from view import funzioni_utili
+from view.home_page_aziende import HomePage
+from view.home_page_certificatore import HomePageCertificatore
+from view.home_page_guest import HomePageGuest
 
 from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 import pyotp

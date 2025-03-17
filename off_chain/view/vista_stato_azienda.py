@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon, QRegExpValidator
 from PyQt5.QtWidgets import (QMainWindow, QLabel, QVBoxLayout, QWidget, QFormLayout, QLineEdit,
                              QHBoxLayout, QPushButton, QMessageBox, QAction)
 
-from off_chain.view import funzioni_utili
+from view import funzioni_utili
 
 
 class VistaStatoAzienda(QMainWindow):

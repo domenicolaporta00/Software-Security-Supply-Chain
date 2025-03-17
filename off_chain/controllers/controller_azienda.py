@@ -1,4 +1,4 @@
-from off_chain.database_domenico.db_operations import Database, DuplicatedEntryError
+from database_domenico.db_operations import Database, DuplicatedEntryError
 
 
 class ControllerAzienda:
@@ -125,14 +125,14 @@ class ControllerAzienda:
             return False, f"Errore sconosciuto: {str(e)}"
 
     def modifica_password(self, id_azienda, vecchia_password, nuova_password):
-    """Interfaccia per modificare la password di un'azienda"""
-    try:
-        self.database.modifica_password(id_azienda, vecchia_password, nuova_password)
-        return True, "Password modificata con successo!"
-    except ValueError as e:
-        return False, str(e)
-    except Exception:
-        return False, "Errore durante la modifica della password."
+        """Interfaccia per modificare la password di un'azienda"""
+        try:
+            self.database.modifica_password(id_azienda, vecchia_password, nuova_password)
+            return True, "Password modificata con successo!"
+        except ValueError as e:
+            return False, str(e)
+        except Exception:
+            return False, "Errore durante la modifica della password."
 
     def recupera_password(self, id_azienda):
         password = self.database.get_password(id_azienda)

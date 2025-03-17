@@ -1,24 +1,10 @@
-FROM python:3.13.2
+FROM python:3.10
+
 WORKDIR /app
-COPY off_chain/pyproject.toml off_chain/poetry.lock ./
+COPY . /app
 
-# Installiamo le dipendenze di sistema per PyQt5
-RUN apt-get update && apt-get install -y \
-    libegl1 \
-    libopengl0 \
-    libxcb-xinerama0 \
-    libxkbcommon-x11-0 \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN pip install poetry && poetry install --no-dev
-
-# Disabilitiamo gli ambienti virtuali Poetry (per Docker)
-ENV POETRY_VIRTUALENVS_CREATE=false
-
-COPY off_chain/ .
-CMD ["poetry", "run", "python", "app.py"]
+RUN pip install poetry
+RUN poetry install
 
 
-
-
-
+CMD ["poetry", "run", "python", "main.py"]

@@ -3,8 +3,8 @@ from PyQt5.QtGui import QIcon, QRegExpValidator
 from PyQt5.QtWidgets import (QMainWindow, QLabel, QVBoxLayout, QWidget, QFormLayout, QLineEdit,
                              QHBoxLayout, QPushButton, QComboBox, QMessageBox, QDateEdit, QDialog, QTextEdit)
 
-from off_chain.controllers.controller_azienda import ControllerAzienda
-from off_chain.view import funzioni_utili
+from controllers.controller_azienda import ControllerAzienda
+from view import funzioni_utili
 
 
 def operazioni(tipo):

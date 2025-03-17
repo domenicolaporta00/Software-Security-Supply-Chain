@@ -2,12 +2,12 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton, QMenu, QMessageBox
 
-from off_chain.controllers.controller_guest import ControllerGuest
-from off_chain.view import funzioni_utili
-from off_chain.view.istruzioni import Istruzioni
-from off_chain.view.vista_aziende import VistaAziende
-from off_chain.view.vista_prodotti import VistaProdotti
-from off_chain.view.vista_sviluppatori import VistaSviluppatori
+from controllers.controller_guest import ControllerGuest
+from view import funzioni_utili
+from view.istruzioni import Istruzioni
+from view.vista_aziende import VistaAziende
+from view.vista_prodotti import VistaProdotti
+from view.vista_sviluppatori import VistaSviluppatori
 
 
 class HomePageGuest(QMainWindow):

@@ -2,14 +2,14 @@ from PyQt5.QtCore import Qt, QTimer, QEvent
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton, QMessageBox
 
-from off_chain.controllers.controller_azienda import ControllerAzienda
-from off_chain.view import funzioni_utili
-from off_chain.view.istruzioni import Istruzioni
-from off_chain.view.vista_stato_azienda import VistaStatoAzienda
-from off_chain.view.vista_azioni_compensative import VistaAzioniCompensative
-from off_chain.view.vista_operazioni import VistaOperazioni
-from off_chain.view.vista_soglie import VistaSoglie
-from off_chain.view.vista_sviluppatori import VistaSviluppatori
+from controllers.controller_azienda import ControllerAzienda
+from view import funzioni_utili
+from view.istruzioni import Istruzioni
+from view.vista_stato_azienda import VistaStatoAzienda
+from view.vista_azioni_compensative import VistaAzioniCompensative
+from view.vista_operazioni import VistaOperazioni
+from view.vista_soglie import VistaSoglie
+from view.vista_sviluppatori import VistaSviluppatori
 
 
 class HomePage(QMainWindow):

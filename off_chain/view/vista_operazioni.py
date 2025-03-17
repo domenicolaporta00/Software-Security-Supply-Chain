@@ -5,8 +5,8 @@ from PyQt5.QtGui import QFont, QStandardItemModel, QStandardItem, QIcon
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QListView, QHBoxLayout, QPushButton, QMenu, \
     QDialog, QDialogButtonBox, QMessageBox, QDateEdit
 
-from off_chain.view import funzioni_utili
-from off_chain.view.inserisci_operazione import VistaInserisciOperazione
+from view import funzioni_utili
+from view.inserisci_operazione import VistaInserisciOperazione
 
 
 def stringa_giusta(f, is_storico, scarto):

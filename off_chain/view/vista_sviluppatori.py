@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt, QSize, pyqtSignal
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton, QMessageBox
 
-from off_chain.view import funzioni_utili
+from view import funzioni_utili
 
 
 class VistaSviluppatori(QMainWindow):

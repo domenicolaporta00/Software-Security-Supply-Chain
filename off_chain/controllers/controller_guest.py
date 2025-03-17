@@ -1,4 +1,4 @@
-from off_chain.database_domenico.db_operations import Database
+from database_domenico.db_operations import Database
 
 
 class ControllerGuest:

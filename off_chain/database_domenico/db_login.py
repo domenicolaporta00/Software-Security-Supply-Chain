@@ -23,11 +23,6 @@ class UniqueConstraintError(DatabaseError):
     pass
 
 
-def hash_password(password):
-    salt = bcrypt.gensalt()  # Genera un salt casuale
-    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)  # Hash della password
-    return hashed
-
 
 class DatabaseLogin:
     def __init__(self):
@@ -42,24 +37,6 @@ class DatabaseLogin:
         self.conn = sqlite3.connect(DB_PATH)
         self.cur = self.conn.cursor()
 
-    def fetch_query(self, query, params=()):
-        """Esegue una SELECT e restituisce i risultati"""
-        try:
-            self.cur.execute(query, params)
-            return self.cur.fetchall()
-        except sqlite3.Error as e:
-            raise RuntimeError(f"Errore SQLite durante la SELECT: {e}")
-
-    def execute_query(self, query, params=()):
-        """Esegue una query di scrittura (INSERT, UPDATE, DELETE)"""
-        try:
-            self.cur.execute(query, params)
-            self.conn.commit()
-        except sqlite3.IntegrityError as e:
-            raise UniqueConstraintError("Username già esistente") from e
-        except sqlite3.Error as e:
-            print("Errore SQLite:", e)
-            raise DatabaseError("Errore nel database") from e
 
     def get_lista_credenziali(self):
         query = """

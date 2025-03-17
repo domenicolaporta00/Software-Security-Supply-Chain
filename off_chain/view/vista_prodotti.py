@@ -5,8 +5,8 @@ from PyQt5.QtGui import QFont, QStandardItemModel, QStandardItem, QIcon
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QListView, QHBoxLayout, QPushButton, QMenu, \
     QMessageBox, QInputDialog, QDialog, QComboBox, QDialogButtonBox, QLineEdit, QCompleter
 
-from off_chain.view import funzioni_utili
-from off_chain.view.vista_operazioni import VistaOperazioni
+from view import funzioni_utili
+from view.vista_operazioni import VistaOperazioni
 
 
 class VistaProdotti(QMainWindow):

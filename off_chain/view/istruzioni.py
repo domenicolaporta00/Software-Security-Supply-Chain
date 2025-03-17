@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QLabel, QScrollArea, QMessageBox
 )
 
-from off_chain.view import funzioni_utili
+from view import funzioni_utili
 
 
 class Istruzioni(QMainWindow):
