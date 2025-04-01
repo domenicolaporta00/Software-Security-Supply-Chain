@@ -1,5 +1,6 @@
 # Ignore Poetry dependency files
-#poetry.lock
+poetry.lock
+*.DS_Store
 
 # Ignore compiled Python files
 __pycache__/
